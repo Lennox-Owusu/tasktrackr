@@ -22,4 +22,7 @@ public class TaskRepository {
     public Optional<Task> findById(String id) {
         return Optional.ofNullable(tasks.get(id));
     }
+    public void delete(String id) {
+        tasks.remove(id);
+    }
 }

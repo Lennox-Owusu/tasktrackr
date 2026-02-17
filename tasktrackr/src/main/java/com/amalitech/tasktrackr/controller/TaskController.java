@@ -36,4 +36,29 @@ public class TaskController {
         log.info("Fetching all tasks");
         return repository.findAll();
     }
+
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable String id, @RequestBody Task updatedTask) {
+        log.info("Updating task with ID: {}", id);   // <-- NEW LOG LINE
+
+        return repository.findById(id)
+                .map(existing -> {
+                    existing.setTitle(updatedTask.getTitle());
+                    existing.setDescription(updatedTask.getDescription());
+                    repository.save(existing);
+                    return existing;
+                })
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable String id) {
+        log.info("Deleting task with ID: {}", id);   // <-- NEW LOG LINE
+
+        if (repository.findById(id).isEmpty()) {
+            throw new RuntimeException("Task not found");
+        }
+        repository.delete(id);
+    }
 }
